@@ -18,8 +18,24 @@ export class BookstoreService {
     return this.repo.save(item);
   }
 
-  findAll(): Promise<Bookstore[]> {
-    return this.repo.find({ relations: ['books'] });
+  async findAll(): Promise<any[]> {
+    const booksWithQuantities = await this.repo.find({
+      relations: ['availabilities', 'availabilities.book'],
+    });
+
+    return booksWithQuantities.map((store) => {
+      return {
+        id: store.id,
+        title: store.title,
+        books: store.availabilities.map((quantity) => ({
+          id: quantity.book.id,
+          title: quantity.book.title,
+          author: quantity.book.author,
+          quantity: quantity.quantity,
+          price: quantity.price,
+        })),
+      };
+    });
   }
 
   findOne(id: number): Promise<Bookstore> {
@@ -27,7 +43,11 @@ export class BookstoreService {
   }
 
   find(id: number): Promise<Bookstore[]> {
-    return this.repo.find({ relations: ['books'], where: { id }, take: 1 });
+    return this.repo.find({
+      relations: ['availabilities', 'availabilities.book'],
+      where: { id },
+      take: 1,
+    });
   }
 
   update(

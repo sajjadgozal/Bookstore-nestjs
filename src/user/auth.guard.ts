@@ -49,8 +49,10 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (!requiredRoles) {
+    if (!requiredRoles && user.role?.includes(Role.Admin)) {
       return true;
+    } else if (!requiredRoles) {
+      return false;
     }
     return requiredRoles.some((role) => user.role?.includes(role));
   }

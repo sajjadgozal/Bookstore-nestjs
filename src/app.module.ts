@@ -9,6 +9,7 @@ import { BookstoreModule } from './bookstore/bookstore.module';
 import { User } from './user/entities/user.entity';
 import { Book } from './book/entities/book.entity';
 import { Bookstore } from './bookstore/entities/bookstore.entity';
+import { Availability } from './book/entities/availability.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './user/auth.guard';
 
@@ -21,7 +22,7 @@ import { AuthGuard } from './user/auth.guard';
       port: parseInt(process.env.DB_PORT),
       password: process.env.DB_PASSWORD,
       username: process.env.DB_USER,
-      entities: [User, Book, Bookstore],
+      entities: [User, Book, Bookstore, Availability],
       database: process.env.DB_NAME,
       synchronize: true,
       logging: true,

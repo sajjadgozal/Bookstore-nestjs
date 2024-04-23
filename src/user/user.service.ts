@@ -6,6 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { usersSeed } from './user.seed';
 
 @Injectable()
 export class UserService {
@@ -61,5 +62,9 @@ export class UserService {
       };
     }
     return new UnauthorizedException();
+  }
+
+  async seed() {
+    await this.repo.save(usersSeed);
   }
 }

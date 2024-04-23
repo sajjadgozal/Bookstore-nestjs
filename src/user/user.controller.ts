@@ -11,54 +11,86 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginDto } from './dto/login.dto';
 import { Role } from '../enums/role.enum';
 import { Roles } from '../decorators/roles.decorator';
-import { Public } from '../decorators/public.decorator';
+import {
+  ApiBearerAuth,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('seed')
+  @Public()
+  @ApiOperation({
+    summary: 'Seed users',
+    description:
+      'Seed users. Only available in development mode.  [ user@a.a - admin@a.a - manager@a.a ] , password of all: password',
+  })
+  seed() {
+    if (process.env.NODE_ENV !== 'dev') {
+      return 'Seeding is only allowed in development mode';
+    }
+    return this.userService.seed();
+  }
+
   @Get('profile')
+  @ApiTags('user')
+  @Roles(Role.Admin, Role.Manager, Role.User)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get profile',
+    description: 'Get profile of the user.',
+  })
   getProfile(@Request() req) {
     return req.user;
   }
 
   @Post()
-  @Roles(Role.Admin)
+  @Public()
+  @ApiTags('user')
+  @ApiOperation({
+    summary: 'Create a new user',
+    description: 'Create a new user.',
+  })
+  @ApiBearerAuth()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
-  @Roles(Role.Admin)
+  @ApiOperation({
+    summary: 'Get all users',
+    description: 'Retrieve a list of all users.',
+  })
+  @ApiTags('user')
+  @ApiBearerAuth()
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  @Roles(Role.Admin)
+  @ApiExcludeEndpoint()
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
-  @Roles(Role.Admin)
+  @ApiExcludeEndpoint()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
-  // @UseGuards() is globally scoped in the AppModule
   @Delete(':id')
-  @Roles(Role.Admin)
+  @ApiExcludeEndpoint()
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
-  }
-
-  @Public()
-  @Post('login')
-  async login(@Body() loginDto: LoginDto) {
-    return this.userService.validateUser(loginDto.email, loginDto.password);
   }
 }
