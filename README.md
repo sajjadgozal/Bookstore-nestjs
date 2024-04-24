@@ -1,18 +1,26 @@
-# Bookstore api 
+# Bookstore API
 
-## generate .env from .env.example 
+## Generate .env from .env.example 
+To set up your environment variables, generate a `.env` file from `.env.example`.
+
+## Docker run
 docker compose up --build
 
-## swagger
-http://localhost:3000/api
+## Swagger
+Access the API documentation using Swagger UI:
+
+[http://localhost:3000/api](http://localhost:3000/api)
 
 ## pgAdmin
-http://localhost:5050
+Access pgAdmin for managing PostgreSQL databases:
 
-## seed Users : 
-only in dev env , 
+[http://localhost:5050](http://localhost:5050)
 
- [ user@a.a - admin@a.a - manager@a.a ] , password of all: password
+## Seed Users
+Seed users are available only in the development environment. Use the following credentials:
 
- ## guard
- all routes are admin guarded by default, they get public by making rule on them  
+- Email addresses: `user@a.a`, `admin@a.a`, `manager@a.a`
+- Password for all users: `password`
+
+## Guard
+All routes are admin-guarded by default. To make a route public, customize the guard rules accordingly.
