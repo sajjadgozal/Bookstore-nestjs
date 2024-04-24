@@ -3,8 +3,13 @@
 ## Generate .env from .env.example 
 To set up your environment variables, generate a `.env` file from `.env.example`.
 
-## Docker run
+## Docker run : 
 docker compose up --build
+
+## Local use : 
+npm install 
+
+and change environmental variables for db. (host)
 
 ## Swagger
 Access the API documentation using Swagger UI:
